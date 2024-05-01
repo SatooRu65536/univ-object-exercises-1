@@ -6,6 +6,7 @@ public class FuelExpenseCalculator {
         car.fuelEfficiency = 2.5;
 
         do {
+            System.out.print("走行距離(km)を入力. 終了する場合は end を入力: ");
             String input = scanner.nextLine();
             if (input.equals("end"))
                 break;

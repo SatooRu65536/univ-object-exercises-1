@@ -138,7 +138,7 @@ public class StudentScores {
 
     // 平均点を取得
     public double getAverage() {
-        return getTotal() / scores.length;
+        return (double) getTotal() / scores.length;
     }
 
     // 最高点を取得
