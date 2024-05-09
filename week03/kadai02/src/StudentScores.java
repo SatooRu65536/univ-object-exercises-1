@@ -5,7 +5,7 @@ public class StudentScores {
     String name;
     int[] scores = new int[5];
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         int id = 1;
         String name = "佐藤さとる";
         int[] expectedScores = { 60, 80, 70, 60, 80 };

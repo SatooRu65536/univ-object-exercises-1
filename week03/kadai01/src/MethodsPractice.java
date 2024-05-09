@@ -1,5 +1,5 @@
 public class MethodsPractice {
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         MethodsPractice app = new MethodsPractice();
 
         // printCurrency
