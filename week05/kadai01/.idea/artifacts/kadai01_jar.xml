@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="kadai01:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/kadai01_jar</output-path>
+    <root id="archive" name="kadai01.jar">
+      <element id="module-output" name="kadai01" />
+    </root>
+  </artifact>
+</component>
