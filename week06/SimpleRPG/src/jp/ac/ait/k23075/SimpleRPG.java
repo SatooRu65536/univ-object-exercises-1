@@ -31,6 +31,9 @@ public class SimpleRPG {
                 new Random().nextInt(8) + 8, // DEF 8 〜 15
                 new Random().nextInt(8) + 8); // AGI 8 〜 15
 
+        Weapon weapon = new Weapon("硬い氷", 5);
+        hero.setWeapon(weapon);
+
         return hero;
     }
 
