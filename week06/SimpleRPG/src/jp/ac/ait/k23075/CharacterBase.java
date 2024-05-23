@@ -94,6 +94,12 @@ public class CharacterBase {
 
     @Override
     public String toString() {
-        return String.format("%s : HP %d, ATK %d, DEF %d, AGI %d", this.name, this.hp, this.atk, this.def, this.agi);
+        String name = "[" + this.name + "]";
+        String hp = "HP :" + this.hp;
+        String atk = "ATK:" + this.atk;
+        String def = "DEF:" + this.def;
+        String agi = "AGI:" + this.agi;
+
+        return name + "\n  " + hp + "\n  " + atk + "\n  " + def + "\n  " + agi;
     }
 }

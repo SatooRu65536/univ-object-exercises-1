@@ -18,9 +18,9 @@ public class SimpleRPG {
      * @return
      */
     Hero createHero() {
-
         // 勇者の名前を入力させます
-        System.out.println("勇者の名前を入力");
+        System.out.println("名前を入力してください");
+        System.out.print("> ");
         String name = scanner.nextLine() + "ペンギン";
 
         // 以下の表に従ってパラメータを生成
@@ -30,9 +30,6 @@ public class SimpleRPG {
                 new Random().nextInt(8) + 8, // ATK 8 〜 15
                 new Random().nextInt(8) + 8, // DEF 8 〜 15
                 new Random().nextInt(8) + 8); // AGI 8 〜 15
-
-        Weapon weapon = new Weapon("硬い氷", 5);
-        hero.setWeapon(weapon);
 
         return hero;
     }
@@ -61,11 +58,16 @@ public class SimpleRPG {
      * @return falseの場合続行不能
      */
     boolean heroAction() {
+        System.out.println("\n--- " + hero.getName() + "のターン ---");
+
         // 勇者の1回分の行動決定と行動を行わせるメソッド
 
         // 画面より、攻撃か逃亡かを選択させ、その行動結果を画面に表示します
-        System.out.println("勇者の行動を決めてください(1: 攻撃, それ以外: 逃亡)");
+        System.out.println(hero.getName() + "の行動を決めてください(1: 攻撃, それ以外: 逃亡)");
+        System.out.print("> ");
+
         String input = scanner.nextLine();
+        System.out.print("\n");
 
         if (input.equals("1")) {
             // 攻撃だった場合
@@ -73,30 +75,56 @@ public class SimpleRPG {
             System.out.println(enemy.getName() + "に" + ret.damage + "のダメージ");
             if (ret.state == AttackResult.BATTLE_END) {
                 // 戦闘終了
-                System.out.println(enemy.getName() + "を倒しました。ゲームクリア。");
+                System.out.println(enemy.getName() + "を倒して食物連鎖の頂点に君臨した！");
+                System.out.println();
+                System.out.println(">> ゲームクリア <<");
                 return false; // 続行不能
             }
+
+            System.out.println();
+            showStatus();
+
             // 戻り値は、行動により戦闘続行可否をbooleanで返します
             return true;
         } else {
             // 逃亡だった場合
-            System.out.println(hero.getName() + "は逃亡しました。ゲームオーバー");
+            System.out.println(hero.getName() + "は仲間の元へ逃げ帰った。それが正しい。");
+            System.out.println();
+            System.out.println(">> ゲームオーバー...? <<");
+
             return false; // 続行不能
         }
     }
 
     boolean enemyAction() {
+        System.out.println("\n--- " + enemy.getName() + "のターン ---");
+
         // 敵の1回分の攻撃行動を行わせるメソッド（敵は攻撃の行動のみ行います）
         // 攻撃だった場合
         AttackResult ret = enemy.attack(hero);
         System.out.println(hero.getName() + "に" + ret.damage + "のダメージ");
         if (ret.state == AttackResult.BATTLE_END) {
             // 戦闘終了
-            System.out.println(hero.getName() + "は無残にも倒れてしまった。ゲームオーバー");
+            System.out.println(hero.getName() + "は無残にも喰われてしまった。");
+            System.out.println();
+            System.out.println(">> ゲームオーバー <<");
+
             return false; // 続行不能
         }
         // 戻り値は、行動により戦闘続行可否をbooleanで返します
+
+        System.out.println();
+        showStatus();
+
         return true;
+    }
+
+    /**
+     * 勇者と敵の残りHPを表示するメソッド
+     */
+    void showStatus() {
+        System.out.println("| HP " + hero.getHp() + " : " + hero.getName());
+        System.out.println("| HP " + enemy.getHp() + " : " + enemy.getName());
     }
 
     void battleLoop() {
@@ -128,6 +156,15 @@ public class SimpleRPG {
 
         app.enemy = app.createEnemy();
         System.out.println(app.enemy.toString());
+
+        app.hero.setWeapon(Weapon.getWeapon());
+
+        System.out.println("");
+        System.out.println(app.hero.getName() + "は、" + app.enemy.getName() + "と遭遇した！");
+        System.out.println(app.hero.getName() + "は、と群れの元に帰りたい！");
+        System.out.println(app.hero.getName() + "は、" + app.hero.getWeapon().getName() + "を取り出した!");
+        System.out.println(app.hero.getName() + "は、攻撃力が " + app.hero.getWeapon().getAtk() + " 上昇した！");
+        System.out.println("");
 
         app.battleLoop();
     }

@@ -54,12 +54,14 @@ public class Hero extends CharacterBase {
         // Random#nextDoubleは、1.0以下のランダムな浮動小数点の値を生成する
         if (r.nextDouble() >= successRate) {
             // 失敗判定
+            System.out.println(">>攻撃が外れた！");
             ret.damage = 0; // ダメージ処理をしないで0を返す
             return ret;
         }
 
         // 攻撃成功時 15% の確率でクリティカル
         if (r.nextDouble() < 0.15) {
+            System.out.println("クリティカルヒット！");
             damage *= 2;
         }
 
