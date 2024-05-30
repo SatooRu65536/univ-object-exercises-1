@@ -3,6 +3,10 @@ package jp.ac.ait.k23075;
 import java.util.Random;
 import java.util.Scanner;
 
+import jp.ac.ait.k23075.jobs.EmperorPenguin;
+import jp.ac.ait.k23075.jobs.GentooPenguin;
+import jp.ac.ait.k23075.jobs.KingPenguin;
+
 public class SimpleRPG {
 
     // このクラスでは、画面からの入力をいろいろなメソッドで行うため、
@@ -23,15 +27,24 @@ public class SimpleRPG {
         System.out.print("> ");
         String name = scanner.nextLine() + "ペンギン";
 
-        // 以下の表に従ってパラメータを生成
-        Hero hero = new Hero( // パラメータ ランダム範囲
-                name,
-                new Random().nextInt(41) + 80, // HP 80 〜 120
-                new Random().nextInt(8) + 8, // ATK 8 〜 15
-                new Random().nextInt(8) + 8, // DEF 8 〜 15
-                new Random().nextInt(8) + 8); // AGI 8 〜 15
+        // パラメータをランダム生成
+        int hp = new Random().nextInt(41) + 80;
+        int atk = new Random().nextInt(8) + 8;
+        int def = new Random().nextInt(8) + 8;
+        int agi = new Random().nextInt(8) + 8;
 
-        return hero;
+        // ペンギンの種類をランダムに決定
+        Hero[] heros = {
+                new EmperorPenguin(name, hp, atk, def, agi),
+                new GentooPenguin(name, hp, atk, def, agi),
+                new EmperorPenguin(name, hp, atk, def, agi),
+                new KingPenguin(name, hp, atk, def, agi),
+        };
+
+        // ペンギンの種類をランダムに決定
+        int jobIndex = name.length() % heros.length;
+
+        return heros[jobIndex];
     }
 
     Enemy createEnemy() {
@@ -52,47 +65,81 @@ public class SimpleRPG {
 
     }
 
+    private boolean heroActionAttack() {
+        // 攻撃だった場合
+        AttackResult ret = hero.attack(enemy);
+        System.out.println(enemy.getName() + "に" + ret.damage + "のダメージ");
+        if (ret.state == AttackResult.BATTLE_END) {
+            // 戦闘終了
+            System.out.println(enemy.getName() + "を倒して食物連鎖の頂点に君臨した！");
+            System.out.println();
+            System.out.println(">> ゲームクリア <<");
+            return false; // 続行不能
+        }
+
+        System.out.println();
+        showStatus();
+
+        // 戻り値は、行動により戦闘続行可否をbooleanで返します
+        return true;
+    }
+
+    private boolean heroActionSpecialAttack(IHeroJob job) {
+        // 攻撃だった場合
+        AttackResult ret = job.specialAttack(enemy);
+        System.out.println(enemy.getName() + "に" + ret.damage + "のダメージ");
+        if (ret.state == AttackResult.BATTLE_END) {
+            // 戦闘終了
+            System.out.println(enemy.getName() + "を倒して食物連鎖の頂点に君臨した！");
+            System.out.println();
+            System.out.println(">> ゲームクリア <<");
+            return false; // 続行不能
+        }
+
+        System.out.println();
+        showStatus();
+
+        // 戻り値は、行動により戦闘続行可否をbooleanで返します
+        return true;
+    }
+
+    private boolean heroActionEscape() {
+        // 逃亡だった場合
+        System.out.println(hero.getName() + "は、群れの元に帰りたい！");
+        System.out.println(hero.getName() + "は、逃げ出した！");
+        System.out.println();
+        System.out.println(">> ゲームオーバー <<");
+        return false; // 続行不能
+    }
+
     /**
      * 勇者の行動
      * 
      * @return falseの場合続行不能
      */
     boolean heroAction() {
+        IHeroJob job = (IHeroJob) hero;
+
         System.out.println("\n--- " + hero.getName() + "のターン ---");
 
         // 勇者の1回分の行動決定と行動を行わせるメソッド
 
         // 画面より、攻撃か逃亡かを選択させ、その行動結果を画面に表示します
-        System.out.println(hero.getName() + "の行動を決めてください(1: 攻撃, それ以外: 逃亡)");
+        System.out.println(hero.getName() + "の行動を決めてください");
+        System.out.println("  1: 通常攻撃");
+        System.out.println("  2: " + job.getSpecialAttackName());
+        System.out.println("  3: 逃亡");
         System.out.print("> ");
 
         String input = scanner.nextLine();
         System.out.print("\n");
 
         if (input.equals("1")) {
-            // 攻撃だった場合
-            AttackResult ret = hero.attack(enemy);
-            System.out.println(enemy.getName() + "に" + ret.damage + "のダメージ");
-            if (ret.state == AttackResult.BATTLE_END) {
-                // 戦闘終了
-                System.out.println(enemy.getName() + "を倒して食物連鎖の頂点に君臨した！");
-                System.out.println();
-                System.out.println(">> ゲームクリア <<");
-                return false; // 続行不能
-            }
-
-            System.out.println();
-            showStatus();
-
-            // 戻り値は、行動により戦闘続行可否をbooleanで返します
-            return true;
+            return heroActionAttack();
+        } else if (input.equals("2")) {
+            return heroActionSpecialAttack(job);
         } else {
-            // 逃亡だった場合
-            System.out.println(hero.getName() + "は仲間の元へ逃げ帰った。それが正しい。");
-            System.out.println();
-            System.out.println(">> ゲームオーバー...? <<");
-
-            return false; // 続行不能
+            return heroActionEscape();
         }
     }
 
