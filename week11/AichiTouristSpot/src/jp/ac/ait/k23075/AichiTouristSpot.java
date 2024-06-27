@@ -27,11 +27,10 @@ public class AichiTouristSpot {
         return -1;
     }
 
-    private static List<Spot> getSpotsByFile(Path file) throws FileNotFoundException {
+    private static List<Spot> getSpotsByFile(Path file) throws FileNotFoundException, HeaderNotFoundException {
         var spots = new ArrayList<Spot>();
 
         if (!Files.isReadable(file)) {
-            System.out.println("ファイル読み込めませんでした");
             throw new FileNotFoundException("ファイル読み込めませんでした");
         }
 
@@ -43,6 +42,10 @@ public class AichiTouristSpot {
                 String header = sc.nextLine();
                 nameIndex = getColNumByHeader(header, new String[] { "名称", "データ名" });
                 positionIndex = getColNumByHeader(header, new String[] { "形状(WKT)" });
+            }
+
+            if (nameIndex == -1 || positionIndex == -1) {
+                throw new HeaderNotFoundException("ヘッダーが見つかりませんでした");
             }
 
             while (sc.hasNextLine()) {
@@ -63,7 +66,8 @@ public class AichiTouristSpot {
         try {
             files = Files.list(Path.of(dirPath)).collect(Collectors.toList());
         } catch (IOException e) {
-            throw new UncheckedIOException(e);
+            System.out.println("ディレクトリが見つかりませんでした");
+            return;
         }
 
         var spots = new ArrayList<Spot>();
@@ -74,6 +78,8 @@ public class AichiTouristSpot {
                 spots.addAll(getSpotsByFile(file));
             } catch (FileNotFoundException e) {
                 System.out.println("ファイル読み込めませんでした");
+            } catch (HeaderNotFoundException e) {
+                System.out.println("ヘッダーが見つかりませんでした");
             }
         }
 
@@ -90,6 +96,7 @@ public class AichiTouristSpot {
         // 書き込み
         try (BufferedWriter bw = Files.newBufferedWriter(Path.of("TouristSpot.csv"), Charset.defaultCharset())) {
             bw.write("緯度情報,経度情報,愛工大からの距離,データ名");
+            bw.newLine();
 
             for (Spot spot : spots) {
                 bw.write(spot.toCSVLine(ait));
