@@ -1,0 +1,72 @@
+* {
+  margin: unset;
+  padding: unset;
+  box-sizing: border-box;
+}
+
+.center-wrapper {
+  height: 100vh;
+  position: relative;
+}
+
+.item,
+.message,
+.push {
+  height: fit-content;
+  width: fit-content;
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  z-index: 1;
+  font-size: 50px;
+}
+
+.message {
+  top: 150px;
+  display: none;
+}
+
+.push {
+  font-size: 25px;
+  padding: 5px 10px;
+}
+
+.bg {
+  position: fixed;
+  width: 200vw;
+  height: 200vw;
+  left: calc(50% - 100vw);
+  top: calc(50% - 100vw);
+  background-image: repeating-conic-gradient(transparent 0,
+      transparent 13deg,
+      #ffab3c 13deg,
+      #ffab3c 16deg),
+    repeating-conic-gradient(transparent 0,
+      transparent 20deg,
+      #ffab3c 20deg,
+      #ffab3c 23deg),
+    repeating-conic-gradient(transparent 0,
+      transparent 5deg,
+      #ffab3c 5deg,
+      #ffab3c 8deg),
+    repeating-conic-gradient(transparent 0,
+      transparent 40deg,
+      #ffab3c 40deg,
+      #ffab3c 44deg),
+    repeating-conic-gradient(transparent 0,
+      transparent 10deg,
+      #ffab3c 10deg,
+      #ffab3c 13deg);
+  animation: rotation 20s linear infinite;
+  display: none;
+}
+
+@keyframes rotation {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
