@@ -25,6 +25,7 @@ public class HtmlGetter extends JFrame {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setBounds(100, 100, 800, 600);
         setContentPane(panel1);
+        setTitle("k23075 - HTMLGetter");
 
         // 取得ボタンを押された場合
         getBtn.addActionListener(e -> {

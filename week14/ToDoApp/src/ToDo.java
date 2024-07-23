@@ -1,3 +1,4 @@
+import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -5,7 +6,7 @@ import java.util.Date;
 import Exceptions.DateParseException;
 import Exceptions.NotEnteredException;
 
-public class ToDo {
+public class ToDo implements Serializable {
     private String title;
     private Date deadline;
 

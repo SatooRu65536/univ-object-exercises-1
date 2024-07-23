@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 public class LightManager {
@@ -12,7 +14,7 @@ public class LightManager {
     private boolean judge() {
         for (var lights : lightsList) {
             for (var light : lights) {
-                if (light.isOn()) {
+                if (!light.isOn()) {
                     return false;
                 }
             }
@@ -56,7 +58,7 @@ public class LightManager {
     /**
      * マウスイベントを設定する
      */
-    private void setMouseEvent(JLabel[][] lightList, Runnable clearedHandler) {
+    private void setMouseEvent(JLabel[][] lightList, JPanel panel) {
         for (int i = 0; i < lightList.length; i++) {
             var labels = lightList[i];
             for (int j = 0; j < labels.length; j++) {
@@ -69,7 +71,12 @@ public class LightManager {
                         SwingUtilities.invokeLater(() -> {
                             clickHandler(finalJ, finalI);
                             if (judge()) {
-                                clearedHandler.run();
+                                JOptionPane.showMessageDialog(
+                                        panel,
+                                        "GameClear!!",
+                                        "3x3 LightsOut",
+                                        javax.swing.JOptionPane.INFORMATION_MESSAGE);
+                                randomise();
                             }
                         });
                     }
@@ -93,7 +100,8 @@ public class LightManager {
             JLabel label00, JLabel label01, JLabel label02,
             JLabel label10, JLabel label11, JLabel label12,
             JLabel label20, JLabel label21, JLabel label22,
-            Runnable clearedHandler) {
+            JPanel panel
+        ) {
         JLabel[][] lightsList = {
                 { label00, label01, label02 },
                 { label10, label11, label12 },
@@ -101,7 +109,7 @@ public class LightManager {
         };
 
         initLightsList(lightsList);
-        setMouseEvent(lightsList, clearedHandler);
+        setMouseEvent(lightsList, panel);
         randomise();
     }
 }

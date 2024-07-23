@@ -17,13 +17,8 @@ public class LightOut extends JFrame {
             label00, label01, label02, //
             label10, label11, label12, //
             label20, label21, label22, //
-            () -> {
-                JOptionPane.showMessageDialog(
-                        panel1,
-                        "GameClear!!",
-                        "3x3 LightsOut",
-                        javax.swing.JOptionPane.INFORMATION_MESSAGE);
-            });
+            panel1
+        );
 
     public LightOut() {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);

@@ -30,6 +30,7 @@ public class AddressBook extends JFrame {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setBounds(100, 100, 800, 600);
         setContentPane(panel1);
+        setTitle("k23075 - アドレス帳");
 
         addButton.addActionListener(e -> appendAddress());
         saveButton.addActionListener(e -> saveFile());

@@ -28,7 +28,6 @@ public class ClickCounter extends JFrame {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         // ウィンドウ起動位置とウィンドウサイズの指定
         setBounds(100, 100, 600, 400);
-
         setTitle("k23075 - クリックカウンタ");
 
         // コンテンツパネル設定 ※IntelliJIDEAでのGUI作成では以下の設定が必須です。

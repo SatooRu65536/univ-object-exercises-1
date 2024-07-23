@@ -1,3 +1,9 @@
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import javax.swing.DefaultListModel;
@@ -9,7 +15,7 @@ import Exceptions.DateParseException;
 import Exceptions.NotEnteredException;
 import Exceptions.NotSelectedException;
 
-public class Manager {
+public class Manager implements Serializable {
     private final JList<String> groupList;
     private final JList<String> todoList;
 
@@ -201,5 +207,38 @@ public class Manager {
         }
 
         return index;
+    }
+
+    /**
+     * シリアライズして保存する
+     */
+    private void save() {
+        try (FileOutputStream fileOut = new FileOutputStream("todo.ser");
+                ObjectOutputStream out = new ObjectOutputStream(fileOut)) {
+            out.writeObject(groups);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * デシリアライズして読み込む
+     */
+    private void load() {
+        try (FileInputStream fileIn = new FileInputStream("todo.ser");
+                ObjectInputStream in = new ObjectInputStream(fileIn)) {
+            Object obj = in.readObject();
+
+            if (obj instanceof ArrayList<?>) {
+                ArrayList<?> genericList = (ArrayList<?>) obj;
+                if (!genericList.isEmpty() && genericList.get(0) instanceof ToDoGroup) {
+                    @SuppressWarnings("unchecked")
+                    groups = (ArrayList<ToDoGroup>) obj;
+                }
+            }
+
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 }
