@@ -1,9 +1,8 @@
-import java.io.Serializable;
 import java.util.ArrayList;
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
 
-public class ToDoGroup implements Serializable {
+public class ToDoGroup {
     private final JList<String> todoList;
 
     private String name;

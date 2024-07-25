@@ -21,25 +21,21 @@ public class ToDoApp extends JFrame {
     private JButton groupAddBtn;
 
     private final Mode mode = new Mode(groupAddBtn, todoAddBtn, groupNameField, todoTitleField);
-    private final Manager manager;
+    private final Manager manager = new Manager(body, groupList, todoList, mode);
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> new ToDoApp().setVisible(true));
     }
 
     public ToDoApp() {
-        manager = new Manager(body, groupList, todoList, mode);
-
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setBounds(100, 100, 800, 600);
         setContentPane(body);
-        setTitle("k23075 - ToDoアプリ");
 
         // グループ追加ボタン 押下
         groupAddBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println(mode.isGroupEditMode());
                 if (mode.isGroupEditMode()) {
                     manager.editGroup(groupNameField);
                 } else {
