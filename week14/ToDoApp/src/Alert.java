@@ -24,6 +24,10 @@ public class Alert {
         show("日付のフォーマットが正しくありません", "yyyy-MM-dd hh:mm の形式で入力してください");
     }
 
+    public void showCannnotRemoveCompletedGroup() {
+        show("グループを削除できません", "完了済みのグループは削除できません");
+    }
+
     /**
      * ダイアログを表示する
      * 

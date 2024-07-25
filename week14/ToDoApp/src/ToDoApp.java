@@ -69,8 +69,8 @@ public class ToDoApp extends JFrame {
         });
 
         JPopupMenu groupPopupMenu = new JPopupMenu();
-        groupPopupMenu.add(createMenuItem("削除", e -> manager.removeGroup()));
         groupPopupMenu.add(createMenuItem("編集", e -> manager.handleGroupEditBtn()));
+        groupPopupMenu.add(createMenuItem("削除", e -> manager.removeGroup()));
         // グループリスト 右クリック
         groupList.addMouseListener(new MouseAdapter() {
             @Override
@@ -82,8 +82,9 @@ public class ToDoApp extends JFrame {
         });
 
         JPopupMenu todoPopupMenu = new JPopupMenu();
-        todoPopupMenu.add(createMenuItem("削除", e -> manager.removeTodo()));
+        todoPopupMenu.add(createMenuItem("完了", e -> manager.handleTodoCompletedBtn()));
         todoPopupMenu.add(createMenuItem("編集", e -> manager.handleTodoEditBtn()));
+        todoPopupMenu.add(createMenuItem("削除", e -> manager.removeTodo()));
         // タスクリスト 右クリック
         todoList.addMouseListener(new MouseAdapter() {
             @Override

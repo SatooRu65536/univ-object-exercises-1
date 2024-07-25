@@ -31,7 +31,21 @@ public class Manager {
         this.mode = mode;
 
         groups.addAll(getSavedToDoGroup());
+        getCompletedGroup();
         showGroupList();
+    }
+
+    private ToDoGroup getCompletedGroup() {
+        // 完了済みのグループを持つか
+        ToDoGroup completedGroup = groups.stream().filter(g -> g.isCompletedGroup()).findFirst().orElse(null);
+        if (completedGroup != null) {
+            return completedGroup;
+        }
+
+        ToDoGroup newGroup = new ToDoGroup("完了済み", true);
+        groups.add(newGroup);
+
+        return newGroup;
     }
 
     /**
@@ -62,6 +76,12 @@ public class Manager {
         try {
             int index = getSelectedIndex(groupList);
             ToDoGroup group = groups.get(index);
+
+            if (group.isCompletedGroup()) {
+                alert.showCannnotRemoveCompletedGroup();
+                return;
+            }
+
             if (alert.confirm("確認", "本当に削除しますか？\nグループ名: " + group.getName())) {
                 groups.remove(index);
                 showGroupList();
@@ -86,6 +106,28 @@ public class Manager {
         } catch (NotSelectedException e) {
             alert.showGroupNotSelected();
         }
+    }
+
+    /**
+     * 完了した ToDo を移動する
+     */
+    public void handleTodoCompletedBtn() {
+        try {
+            int groupIndex = getSelectedIndex(groupList);
+            int todoIndex = getSelectedIndex(todoList);
+            ToDoGroup group = groups.get(groupIndex);
+            ToDoGroup completedGroup = getCompletedGroup();
+            ToDo todo = group.getTodos().get(todoIndex);
+
+            completedGroup.add(todo);
+            group.remove(todoIndex);
+
+            showToDoList(group.getTodos());
+        } catch (NotSelectedException e) {
+            alert.showGroupNotSelected();
+        }
+
+        save();
     }
 
     /**
@@ -226,7 +268,6 @@ public class Manager {
         });
 
         for (ToDo todo : todos) {
-            System.out.println(todo.toString());
             model.addElement(todo.toString());
         }
         todoList.setModel(model);

@@ -4,9 +4,19 @@ import java.util.ArrayList;
 public class ToDoGroup implements Serializable {
     private String name;
     private ArrayList<ToDo> todos = new ArrayList<>();
+    private boolean isCompletedGroup = false;
 
     public ToDoGroup(String name) {
         this.name = name;
+    }
+
+    public ToDoGroup(String name, boolean isCompletedGroup) {
+        this.name = name;
+        this.isCompletedGroup = isCompletedGroup;
+    }
+
+    public boolean isCompletedGroup() {
+        return isCompletedGroup;
     }
 
     /**
