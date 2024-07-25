@@ -1,4 +1,11 @@
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
@@ -22,6 +29,9 @@ public class Manager {
         this.groupList = groupList;
         this.todoList = todoList;
         this.mode = mode;
+
+        groups.addAll(getSavedToDoGroup());
+        showGroupList();
     }
 
     /**
@@ -37,11 +47,12 @@ public class Manager {
             return;
         }
 
-        ToDoGroup newGroup = new ToDoGroup(todoList, groupName);
+        ToDoGroup newGroup = new ToDoGroup(groupName);
         groups.add(newGroup);
-        updateGroupList();
+        showGroupList();
 
         groupNameField.setText("");
+        save();
     }
 
     /**
@@ -53,11 +64,13 @@ public class Manager {
             ToDoGroup group = groups.get(index);
             if (alert.confirm("確認", "本当に削除しますか？\nグループ名: " + group.getName())) {
                 groups.remove(index);
-                updateGroupList();
+                showGroupList();
             }
         } catch (NotSelectedException e) {
             alert.showGroupNotSelected();
         }
+
+        save();
     }
 
     /**
@@ -85,11 +98,13 @@ public class Manager {
             int index = getSelectedIndex(groupList);
             ToDoGroup group = groups.get(index);
             group.setName(groupNameField.getText());
-            updateGroupList();
+            showGroupList();
             mode.toGroupNormalMode();
         } catch (NotSelectedException e) {
             alert.showGroupNotSelected();
         }
+
+        save();
     }
 
     /**
@@ -106,7 +121,8 @@ public class Manager {
         try {
             int groupIndex = getSelectedIndex(groupList);
             ToDo todo = new ToDo(title, deadlineStr);
-            groups.get(groupIndex).add(todo).showList();
+            var todos = groups.get(groupIndex).add(todo).getTodos();
+            showToDoList(todos);
         } catch (NotSelectedException e) {
             alert.showGroupNotSelected();
         } catch (NotEnteredException e) {
@@ -114,6 +130,8 @@ public class Manager {
         } catch (DateParseException e) {
             alert.showDateParseError();
         }
+
+        save();
     }
 
     /**
@@ -125,11 +143,14 @@ public class Manager {
             int todoIndex = getSelectedIndex(todoList);
             ToDoGroup group = groups.get(groupIndex);
             if (alert.confirm("確認", "本当に削除しますか？\nタイトル: " + group.getTodos().get(todoIndex).getTitle())) {
-                group.remove(todoIndex).showList();
+                var todos = group.remove(todoIndex).getTodos();
+                showToDoList(todos);
             }
         } catch (NotSelectedException e) {
             alert.showGroupNotSelected();
         }
+
+        save();
     }
 
     /**
@@ -155,13 +176,16 @@ public class Manager {
             ToDo todo = groups.get(groupIndex).getTodos().get(todoIndex);
             todo.setTitle(todoTitleField.getText());
             todo.setDeadline(todoDeadlineField.getText());
-            groups.get(groupIndex).showList();
+            var todos = groups.get(groupIndex).getTodos();
+            showToDoList(todos);
             mode.toTodoNormalMode();
         } catch (NotSelectedException e) {
             alert.showGroupNotSelected();
         } catch (DateParseException e) {
             alert.showDateParseError();
         }
+
+        save();
     }
 
     /**
@@ -172,18 +196,40 @@ public class Manager {
         if (index == -1) {
             return;
         }
-        groups.get(index).showList();
+        var todos = groups.get(index).getTodos();
+        showToDoList(todos);
     }
 
     /**
      * グループリストを表示する
      */
-    private void updateGroupList() {
+    private void showGroupList() {
         DefaultListModel<String> model = new DefaultListModel<>();
         for (ToDoGroup group : groups) {
             model.addElement(group.getName());
         }
         groupList.setModel(model);
+    }
+
+    /**
+     * ToDo のリストを表示する
+     */
+    public void showToDoList(ArrayList<ToDo> todos) {
+        DefaultListModel<String> model = new DefaultListModel<>();
+
+        // todos をソートする
+        Collections.sort(todos, new Comparator<ToDo>() {
+            @Override
+            public int compare(ToDo o1, ToDo o2) {
+                return o1.getDeadline().compareTo(o2.getDeadline());
+            }
+        });
+
+        for (ToDo todo : todos) {
+            System.out.println(todo.toString());
+            model.addElement(todo.toString());
+        }
+        todoList.setModel(model);
     }
 
     /**
@@ -202,4 +248,38 @@ public class Manager {
 
         return index;
     }
+
+    /**
+     * シリアライズして保存する
+     */
+    private void save() {
+        try (FileOutputStream fileOut = new FileOutputStream("todos.ser");
+                ObjectOutputStream out = new ObjectOutputStream(fileOut)) {
+            out.writeObject(groups);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * デシリアライズして読み込む
+     */
+    @SuppressWarnings("unchecked")
+    private ArrayList<ToDoGroup> getSavedToDoGroup() {
+        try (FileInputStream fileIn = new FileInputStream("todos.ser");
+                ObjectInputStream in = new ObjectInputStream(fileIn)) {
+            Object obj = in.readObject();
+
+            if (obj instanceof ArrayList<?> genericList) {
+                if (!genericList.isEmpty() && genericList.get(0) instanceof ToDoGroup) {
+                    return (ArrayList<ToDoGroup>) obj;
+                }
+            }
+
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return groups;
+    }
+
 }

@@ -1,15 +1,11 @@
+import java.io.Serializable;
 import java.util.ArrayList;
-import javax.swing.DefaultListModel;
-import javax.swing.JList;
 
-public class ToDoGroup {
-    private final JList<String> todoList;
-
+public class ToDoGroup implements Serializable {
     private String name;
     private ArrayList<ToDo> todos = new ArrayList<>();
 
-    public ToDoGroup(JList<String> todoList, String name) {
-        this.todoList = todoList;
+    public ToDoGroup(String name) {
         this.name = name;
     }
 
@@ -78,19 +74,6 @@ public class ToDoGroup {
      */
     public ToDoGroup remove(int index) {
         todos.remove(index);
-        return this;
-    }
-
-    /**
-     * ToDo のリストを表示する
-     */
-    public ToDoGroup showList() {
-        DefaultListModel<String> model = new DefaultListModel<>();
-        for (ToDo todo : todos) {
-            model.addElement(todo.toString());
-        }
-        todoList.setModel(model);
-
         return this;
     }
 }

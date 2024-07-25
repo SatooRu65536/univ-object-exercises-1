@@ -20,7 +20,7 @@ public class ToDoApp extends JFrame {
     private JButton todoAddBtn;
     private JButton groupAddBtn;
 
-    private final Mode mode = new Mode(groupAddBtn, todoAddBtn, groupNameField, todoTitleField);
+    private final Mode mode = new Mode(groupAddBtn, todoAddBtn, groupNameField, todoTitleField, todoDeadlineField);
     private final Manager manager = new Manager(body, groupList, todoList, mode);
 
     public static void main(String[] args) {
@@ -31,6 +31,7 @@ public class ToDoApp extends JFrame {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setBounds(100, 100, 800, 600);
         setContentPane(body);
+        setTitle("k23075 - ToDoApp");
 
         // グループ追加ボタン 押下
         groupAddBtn.addActionListener(new ActionListener() {

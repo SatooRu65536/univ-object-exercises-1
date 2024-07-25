@@ -1,3 +1,5 @@
+import java.text.SimpleDateFormat;
+
 import javax.swing.JButton;
 import javax.swing.JTextField;
 
@@ -10,12 +12,14 @@ public class Mode {
 
     private JTextField groupNameField;
     private JTextField todoTitleField;
+    private JTextField todoDeadlineField;
 
-    public Mode(JButton groupAddBtn, JButton todoAddBtn, JTextField groupNameField, JTextField todoTitleField) {
+    public Mode(JButton groupAddBtn, JButton todoAddBtn, JTextField groupNameField, JTextField todoTitleField, JTextField todoDeadlineField) {
         this.groupAddBtn = groupAddBtn;
         this.todoAddBtn = todoAddBtn;
         this.groupNameField = groupNameField;
         this.todoTitleField = todoTitleField;
+        this.todoDeadlineField = todoDeadlineField;
     }
 
     /**
@@ -62,8 +66,11 @@ public class Mode {
      * @param todo ToDo
      */
     public void toTodoEditMode(ToDo todo) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+
         todoAddBtn.setText("変更");
         todoTitleField.setText(todo.getTitle());
+        todoDeadlineField.setText(dateFormat.format(todo.getDeadline()));
         this.isTodoEditMode = true;
     }
 
@@ -74,5 +81,6 @@ public class Mode {
         this.isTodoEditMode = false;
         todoAddBtn.setText("+");
         todoTitleField.setText("");
+        todoDeadlineField.setText("");
     }
 }
